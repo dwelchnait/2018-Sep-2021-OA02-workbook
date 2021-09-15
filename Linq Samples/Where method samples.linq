@@ -16,7 +16,7 @@
 //beware that Linq is converted to SQL which may not
 //		like certain C# syntax because SQL could convert
 //
-//.Where(pholder => condition [logical operater condition2 ...])
+//.Where(pholder => condition [logical operator condition2 ...])
 
 //Find all albums released in 2000. Display the entire album
 //record
