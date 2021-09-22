@@ -89,18 +89,44 @@ void Main()
 																)
 						         }
 						   );
-	resultsm.Dump();
+	//resultsm.Dump();
 
 //Create a list of Albums showing its title and artist.
 //Show albums with 25 or more tracks only. ***
 //Show the songs on the album listing the name and song length in seconds.
 //(There are 1000 milliseconds in a second)
-
+  	var albumlist = Albums
+					.Where(x => x.Tracks.Count >= 25)
+					.Select( x => new AlbumTracksItem
+					        {
+								Title = x.Title,
+								Artist = x.Artist.Name,
+								AlbumSongs = x.Tracks
+												.Select(trk => new Song
+												{
+													SongName = trk.Name,
+													LengthInSeconds = trk.Milliseconds / 1000
+												}
+												)
+							});
+	albumlist.Dump();
 }
 
 //You can define other methods, fields, classes and namespaces here
 
 //declare a class representing the Employee record from the query
+public class Song
+{
+	public string SongName{get;set;}
+	public int LengthInSeconds{get;set;}
+}
+
+public class AlbumTracksItem
+{
+	public string Title{get;set;}
+	public string Artist{get;set;}
+	public IEnumerable<Song> AlbumSongs{get;set;}
+}
 public class EmployeeItem
 {
 	public string FullName{get;set;}
