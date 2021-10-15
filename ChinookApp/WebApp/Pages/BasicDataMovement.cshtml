@@ -1,5 +1,15 @@
 ﻿@page
 @model WebApp.Pages.BasicDataMovementModel
-@{
+@{      
+    ViewData["Title"] = "Basic Movement"; //title for your browser tag
 }
 <h1>Basic Data Movement</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.MyName))
+{ 
+    <p style="color:firebrick; font-weight:bold;">@Model.MyName</p>
+}
+else
+{
+    <p>The random number is odd.</p>
+}
