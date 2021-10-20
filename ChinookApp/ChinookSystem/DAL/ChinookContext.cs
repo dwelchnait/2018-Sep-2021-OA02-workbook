@@ -2,7 +2,10 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+
+#region Additional Namespaces
 using ChinookSystem.Entities;
+#endregion
 
 #nullable disable
 
