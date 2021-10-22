@@ -13,6 +13,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApp.Data;
 
+#region Additonal Namespaces
+using ChinookSystem;
+#endregion
+
 namespace WebApp
 {
     public class Startup
@@ -30,6 +34,15 @@ namespace WebApp
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
+            //add our backend  (methods) to the IServiceCollection
+            //to reduce the tampering with this Startup file as we add services
+            //   to our backend, we will call a method in the backend to
+            //   do the actual connections.
+            services.AddBackendDependencies(options =>
+                        options.UseSqlServer(
+                           Configuration.GetConnectionString("ChinookDB")));
+
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
