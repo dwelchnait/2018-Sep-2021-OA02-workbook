@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-#region Additional 
+#region Additional Namespaces
 using ChinookSystem.BLL;
 using ChinookSystem.Models;
 #endregion

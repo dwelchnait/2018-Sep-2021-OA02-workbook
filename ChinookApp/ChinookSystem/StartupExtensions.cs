@@ -33,12 +33,12 @@ namespace ChinookSystem
                 return new AboutServices(context);
             });
 
-            //services.AddTransient<anotherBLLclass>((serviceProvider) =>
-            //{
-            //    //get the dbcontext class
-            //    var context = serviceProvider.GetRequiredService<ChinookContext>();
-            //    return new anotherBllclass(context);
-            //});
+            services.AddTransient<AlbumServices>((serviceProvider) =>
+            {
+                //get the dbcontext class
+                var context = serviceProvider.GetRequiredService<ChinookContext>();
+                return new AlbumServices(context);
+            });
         }
     }
 }
