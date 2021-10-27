@@ -40,6 +40,25 @@ namespace ChinookSystem.BLL
                             }).FirstOrDefault();
             return info;
         }
+
+        public List<AlbumItem> Albums_GetAlbumsByGenre(int genreid)
+        {
+            List<AlbumItem> albums = _context.Tracks
+                                .Where(x => x.GenreId == genreid &&
+                                        x.AlbumId.HasValue)
+                                .Select(x => new AlbumItem
+                                {
+                                    AlbumId = (int)x.AlbumId,
+                                    Title = x.Album.Title,
+                                    ArtistId = x.Album.ArtistId,
+                                    ReleaseYear = x.Album.ReleaseYear,
+                                    ReleaseLabel = x.Album.ReleaseLabel
+                                })
+                                .Distinct()
+                                .OrderBy(x => x.Title)
+                                .ToList();
+            return albums;
+        }
         #endregion
     }
 }
