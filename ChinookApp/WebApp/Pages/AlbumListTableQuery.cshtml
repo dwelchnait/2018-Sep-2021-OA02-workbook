@@ -35,19 +35,43 @@
         else
         {
             <table border="1">
-                <tr>
-                    <th>Title</th>
-                    <th>Year</th>
-                    <th>Label</th>
-                </tr>
-                @foreach(var item in Model.Albums)
-                {
+                <thead>
                     <tr>
-                        <td>@item.Title</td>
-                        <td>@item.ReleaseYear</td>
-                        <td>@item.ReleaseLabel</td>
+                        <th>Title</th>
+                        <th>Year</th>
+                        <th>Label</th>
                     </tr>
-                }
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Albums)
+                    {
+                        <tr>
+                            <td>@item.Title</td>
+                            <td>@item.ReleaseYear</td>
+                            <td>@item.ReleaseLabel</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr colspan="3">
+                        <td>
+                            @{
+                                foreach (var pageRef in Model.Pager)
+                                {
+                                    if (pageRef == Model.Pager.CurrentPage) // I can use the == because of PageRef type being a C# 9 record type
+                                    {
+                                        <b>@pageRef.Text</b>
+                                    }
+                                    else
+                                    {
+                                        <a title="Page @pageRef.Page" asp-page="/AlbumListTableQuery"
+                                           asp-route-currentpage="@pageRef.Page">@pageRef.Text</a>
+                                    }
+                                }
+                            }
+                        </td>
+                    </tr>
+                 </tfoot>
             </table>
         }
     }

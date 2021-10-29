@@ -41,9 +41,12 @@ namespace ChinookSystem.BLL
             return info;
         }
 
-        public List<AlbumItem> Albums_GetAlbumsByGenre(int genreid)
+        public List<AlbumItem> Albums_GetAlbumsByGenre(int genreid,
+                                            int pageNumber,
+                                            int pagesize,
+                                            out int totalcount)
         {
-            List<AlbumItem> albums = _context.Tracks
+            IEnumerable<AlbumItem> albums = _context.Tracks
                                 .Where(x => x.GenreId == genreid &&
                                         x.AlbumId.HasValue)
                                 .Select(x => new AlbumItem
@@ -55,9 +58,20 @@ namespace ChinookSystem.BLL
                                     ReleaseLabel = x.Album.ReleaseLabel
                                 })
                                 .Distinct()
-                                .OrderBy(x => x.Title)
-                                .ToList();
-            return albums;
+                                .OrderBy(x => x.Title);
+            //Determine the size of the whole collection w.r.t. the query
+            totalcount = albums.Count();
+            //limit the actually nummber of records returned from the database
+            // depending on the page number and page size
+            //calcuate the number of rows to skip
+            //page 1= skip 0 rows, page 2 = skip Page Size;
+            //  page n = skip (n - 1) * page size
+            int skipRows = (pageNumber - 1) * pagesize;
+            //the query has yet to be actually executed
+            //Linq queries are "Lazy Loaders"
+            //We will force the execution on sql by using .ToList()
+            //we will inform sql to Skip(n rows) and Take(pagesize rows)
+            return albums.Skip(skipRows).Take(pagesize).ToList();
         }
         #endregion
     }
