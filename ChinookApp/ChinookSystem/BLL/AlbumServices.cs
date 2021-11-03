@@ -151,14 +151,13 @@ namespace ChinookSystem.BLL
             }
             //setup the entity instance with the data from the view model parameter
             //NOTE: For an update you need the pkey value
-            exist = new Album
-            {
-                AlbumId = item.AlbumId,
-                Title = item.Title,
-                ArtistId = item.ArtistId,
-                ReleaseYear = item.ReleaseYear,
-                ReleaseLabel = item.ReleaseLabel
-            };
+
+
+            exist.Title = item.Title;
+            exist.ArtistId = item.ArtistId;
+            exist.ReleaseYear = item.ReleaseYear;
+            exist.ReleaseLabel = item.ReleaseLabel;
+           
             //stage add in local memory
             EntityEntry<Album> updating = _context.Entry(exist);
             updating.State = Microsoft.EntityFrameworkCore.EntityState.Modified;
@@ -178,14 +177,7 @@ namespace ChinookSystem.BLL
             {
                 throw new Exception("Album already has been removed from the file");
             }
-            exist = new Album
-            {
-                AlbumId = item.AlbumId,
-                Title = item.Title,
-                ArtistId = item.ArtistId,
-                ReleaseYear = item.ReleaseYear,
-                ReleaseLabel = item.ReleaseLabel
-            };
+            
             //stage add in local memory
             EntityEntry<Album> deleting = _context.Entry(exist);
             deleting.State = Microsoft.EntityFrameworkCore.EntityState.Deleted;

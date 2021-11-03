@@ -1,0 +1,50 @@
+﻿@page "{albumid?}"
+@model WebApp.Pages.CRUDAlbumModel
+@{
+    ViewData["Title"] = "CRUD Album";
+}
+<h1>Maintain Album</h1>
+
+<p>@Model.FeedBackMessage</p>
+
+<form method="post">
+    <label>
+        Album:
+        <input type="text" asp-for="Album.AlbumId" readonly />
+    </label>
+    <label>
+        Title:
+        <input type="text" asp-for="Album.Title" placeholder="enter the album title" />
+    </label>
+    <label>
+        Artist:
+        <select asp-for="Album.ArtistId">
+            @foreach (var item in Model.Artists)
+            {
+                if (item.ValueField == Model.Album.ArtistId)
+                {
+                    <option value="@item.ValueField" selected>@item.DisplayField</option>
+                }
+                else
+                {
+                    <option value="@item.ValueField">@item.DisplayField</option>
+                }
+            }
+        </select>
+    </label>
+    <label>
+        Year:
+        <input type="number" asp-for="Album.ReleaseYear" placeholder="enter the album release year" />
+    </label>
+    <label>
+        Label:
+        <input type="text" asp-for="Album.ReleaseLabel" placeholder="enter the album release label" />
+    </label>
+    <label>
+        <button type="submit" asp-page-handler="New">Save New</button>&nbsp;&nbsp;
+        <button type="submit" asp-page-handler="Update">Update</button>&nbsp;&nbsp;
+        <button type="submit" asp-page-handler="Delete"
+                onclick="return confirm('Are you sure you wish to delete the album?')">
+            Delete</button>&nbsp;&nbsp;
+    </label>
+</form>
