@@ -75,5 +75,10 @@ namespace WebApp.Pages
             //  means you stay on the current page
             return RedirectToPage(new { partialtitle = partialtitle });
         }
+
+        public IActionResult OnPostNew()
+        {
+            return RedirectToPage("/CRUDAlbum");
+        }
     }
 }

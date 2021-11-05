@@ -30,6 +30,7 @@ namespace ChinookSystem.BLL
         {
             //linq to entity therefore you need to access the DbSet in your
             //      context class
+
             AlbumItem info = _context.Albums
                             .Where(x => x.AlbumId == albumid)
                             .Select(x => new AlbumItem
@@ -118,7 +119,7 @@ namespace ChinookSystem.BLL
                                      && x.ArtistId == item.ArtistId
                                      && x.ReleaseYear == item.ReleaseYear)
                             .FirstOrDefault();
-            if (exist == null)
+            if (exist != null)
             {
                 throw new Exception("Album already exists on file");
             }
@@ -136,7 +137,7 @@ namespace ChinookSystem.BLL
             //stage add in local memory
             _context.Add(exist);
             //do any validation within the entity (validation anotation)
-            //send stage request to the database for processing
+            //send stage request to the database for processing (transaction)
             _context.SaveChanges();
             return exist.AlbumId;
         }
@@ -151,7 +152,10 @@ namespace ChinookSystem.BLL
             }
             //setup the entity instance with the data from the view model parameter
             //NOTE: For an update you need the pkey value
-
+            //if the album was found, then you have a copy of that record (instance)
+            //  in your  variable
+            //You the pkey, you need to move your rest of the fields into the
+            //  appropriate columns
 
             exist.Title = item.Title;
             exist.ArtistId = item.ArtistId;
@@ -181,6 +185,8 @@ namespace ChinookSystem.BLL
             //stage add in local memory
             EntityEntry<Album> deleting = _context.Entry(exist);
             deleting.State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
+            
+           
             //send stage request to the database for processing
             //the returned value is the number of rows altered
             return _context.SaveChanges();

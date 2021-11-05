@@ -5,7 +5,8 @@
 }
 <h1>Maintain Album</h1>
 
-<p>@Model.FeedBackMessage</p>
+<p style="font-weight:bold; color:forestgreen;">@Model.FeedBackMessage</p>
+<p style="font-weight:bold; color:firebrick;">@Model.ErrorMessage</p>
 
 <form method="post">
     <label>
@@ -21,7 +22,12 @@
         <select asp-for="Album.ArtistId">
             @foreach (var item in Model.Artists)
             {
-                if (item.ValueField == Model.Album.ArtistId)
+                //for New album, you have yet of obtain an instance of Album
+                //   therefore you CANNOT test to see if the ValueField == the Album instance
+                //Soultion: Have a test (first in conditions) that ensures you have
+                //   the ablumid (.HasValue) BEFORE you attempt to USE the supposed Album
+                //   instance
+                if (Model.albumid.HasValue && item.ValueField == Model.Album.ArtistId)
                 {
                     <option value="@item.ValueField" selected>@item.DisplayField</option>
                 }
@@ -43,8 +49,13 @@
     <label>
         <button type="submit" asp-page-handler="New">Save New</button>&nbsp;&nbsp;
         <button type="submit" asp-page-handler="Update">Update</button>&nbsp;&nbsp;
+        @* add Javascript prompt for delete confirmation using the onclick *@
         <button type="submit" asp-page-handler="Delete"
                 onclick="return confirm('Are you sure you wish to delete the album?')">
-            Delete</button>&nbsp;&nbsp;
+            Delete
+        </button>&nbsp;&nbsp;
+        <button type="submit" asp-page-handler="Clear">Clear</button>&nbsp;&nbsp;
+        <button type="submit" asp-page-handler="Search">Search</button>&nbsp;&nbsp;
+
     </label>
 </form>

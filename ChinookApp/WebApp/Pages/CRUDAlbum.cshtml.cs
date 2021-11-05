@@ -24,6 +24,8 @@ namespace WebApp.Pages
         [TempData]
         public string FeedBackMessage { get; set; }
 
+        public string ErrorMessage { get; set; }
+
         public CRUDAlbumModel(AlbumServices albumservices,
                               ArtistServices artistservices)
         {
@@ -50,46 +52,109 @@ namespace WebApp.Pages
                 Album = _albumservices.Albums_GetAlbumById((int)albumid);
             }
         }
-        
+
+        public IActionResult OnPostNew()
+        {
+            try
+            {
+                //if you did not directly place the select value of your drop down list
+                //  into your crud instance the you would have to manually move the value
+                //  into your crud instance
+                albumid = _albumservices.AddAlbum(Album);
+                FeedBackMessage = $"Album ({albumid}) has been added";               
+                //the response to the browser  is a Post Redirect Get pattern 
+                return RedirectToPage(new { albumid = albumid });
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = GetInnerException(ex).Message;
+                Artists = _artistservices.Artists_List();
+                //the response to the browser is the result of Post processing
+                //this means the OnGet() will not be executed
+                return Page();
+            }
+
+        }
+
+
         public IActionResult OnPostUpdate()
         {
             try
             {
-                int rowaffected = _albumservices.UpdateAlbum(Album);
-                if(rowaffected > 0)
+                if (albumid.HasValue)
                 {
-                    FeedBackMessage = "Album has been updated";
+                    int rowaffected = _albumservices.UpdateAlbum(Album);
+                    if (rowaffected > 0)
+                    {
+                        FeedBackMessage = "Album has been updated";
+                    }
+                    else
+                    {
+                        FeedBackMessage = "No album update. Album does not exist";
+                    }
                 }
                 else
                 {
-                    FeedBackMessage = "No album update. Album does not exist";
+                    FeedBackMessage = "Find an album to maintain before attempting the update";
                 }
+                //the response to the browser  is a Post Redirect Get pattern 
+                return RedirectToPage(new { albumid = albumid });
             }
             catch(Exception ex)
             {
-                FeedBackMessage = ex.Message;
+                ErrorMessage = GetInnerException(ex).Message;
+                Artists = _artistservices.Artists_List();
+                //the response to the browser is the result of Post processing
+                //this means the OnGet() will not be executed
+                return Page();
             }
-            return RedirectToPage(new {albumid = albumid });
+
         }
         public IActionResult OnPostDelete()
         {
             try
             {
-                int rowaffected = _albumservices.DeleteAlbum(Album);
-                if (rowaffected > 0)
+                if (albumid.HasValue)
                 {
-                    FeedBackMessage = "Album has been removed";
+                    int rowaffected = _albumservices.DeleteAlbum(Album);
+                    if (rowaffected > 0)
+                    {
+                        FeedBackMessage = "Album has been removed";
+                    }
+                    else
+                    {
+                        FeedBackMessage = "No album remove. Album does not exist";
+                    }
+                    //remove your pkey value you are hanging on to for Post Get Redirect
+                    albumid = null;
                 }
                 else
                 {
-                    FeedBackMessage = "No album remove. Album does not exist";
+                    FeedBackMessage = "Find an album to review before attempting the delete";
                 }
+                return RedirectToPage(new { albumid = albumid });
             }
             catch (Exception ex)
             {
-                FeedBackMessage = ex.Message;
+                ErrorMessage = GetInnerException(ex).Message;
+                Artists = _artistservices.Artists_List();
+                return Page();
             }
-            return RedirectToPage(new { albumid = albumid });
+            
+        }
+
+        // this method will drill down into Exceptions to find the InnerException
+        // often you may get an error message referring you to the InnerException
+        private Exception GetInnerException (Exception ex)
+        {
+            while(ex.InnerException != null)
+            {
+                //promote the InnerException to be the Exception
+                //this loop will continue until to get to the most InnerException
+                //      which is your actual error you wish to see
+                ex = ex.InnerException;
+            }
+            return ex;
         }
     }
 }
