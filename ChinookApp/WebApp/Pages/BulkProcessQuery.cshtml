@@ -1,0 +1,17 @@
+﻿@page "{queryarg?}"
+@model WebApp.Pages.BulkProcessQueryModel
+@{
+}
+<h1>Bulk Process Query</h1>
+<p> this page will route (pass) multiple (2) arguments to another razor page.</p>
+
+<form method="post">
+    <label>
+        Enter either your Album title or Artist name.
+        <input type="text" requried asp-for="queryarg" />
+    </label>
+    <br/>
+    <button type="submit" asp-page-handler="Artist">Tracks for Artist</button>
+    <button type="submit" asp-page-handler="Album">Tracks for Album</button>
+</form>
+<p>@Model.FeedBackMessage</p>
