@@ -53,6 +53,13 @@ namespace ChinookSystem
                 var context = serviceProvider.GetRequiredService<ChinookContext>();
                 return new ArtistServices(context);
             });
+
+            services.AddTransient<TrackServices>((serviceProvider) =>
+            {
+                //get the dbcontext class
+                var context = serviceProvider.GetRequiredService<ChinookContext>();
+                return new TrackServices(context);
+            });
         }
     }
 }
