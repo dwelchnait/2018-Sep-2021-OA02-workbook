@@ -18,6 +18,11 @@ namespace WebApp.Pages
         [TempData]
         public string FeedBackMessage { get; set; }
 
+        [TempData]
+        public string ErrorMessage { get; set; }
+
+        public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
+
         public BulkProcessModel(TrackServices trackservices)
         {
             _trackservices = trackservices;
@@ -35,7 +40,7 @@ namespace WebApp.Pages
 
         //fouted value local
         [BindProperty(SupportsGet = true)]
-        public string playlist { get; set; }
+        public string playlistname { get; set; }
 
         [BindProperty]
         public int addtrackid { get; set; }
@@ -58,6 +63,20 @@ namespace WebApp.Pages
                                             pageNumber, PAGE_SIZE, out totalcount);
                 Pager = new Paginator(totalcount, current);
             }
+        }
+
+        public IActionResult OnPostFetch()
+        {
+            if (string.IsNullOrWhiteSpace(playlistname))
+            {
+                ErrorMessage = "Enter a playlist name to fetch.";
+            }
+            return RedirectToPage(new
+            {
+                argsearch = argsearch,
+                argvalue = argvalue,
+                playlistname = playlistname
+            });
         }
     }
 }

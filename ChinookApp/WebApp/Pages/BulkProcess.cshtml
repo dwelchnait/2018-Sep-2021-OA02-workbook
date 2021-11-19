@@ -1,4 +1,4 @@
-﻿@page "{argsearch?}/{argvalue?}/{playlist?}"
+﻿@page "{argsearch?}/{argvalue?}/{playlistname?}"
 @model WebApp.Pages.BulkProcessModel
 @{
 }
@@ -13,6 +13,11 @@
     Search by @Model.argsearch on the value @Model.argvalue
     <a href="/BulkProcessQuery"> return to search ...</a>
 </p>
+
+@if(Model.HasError)
+{
+    <blockquote>@Model.ErrorMessage</blockquote>
+}
 
 <section class="setflex">
     <div class="bighalfpage">
@@ -42,10 +47,11 @@
                         {
                             <tr>
                                 <td>
-                                    <form method="post">
+                                    <form method="post" id="oltp">
                                         <input type="hidden" value="@item.TrackId"
                                                asp-for="addtrackid" />
-                                        <button type="submit" title="Add this track">
+                                        <button type="submit" title="Add this track"
+                                                asp-page-handler="AddTrack">
                                             <i class="las la-plus"></i>
                                         </button>
                                     </form>
@@ -84,7 +90,13 @@
         }
     </div>
     <div class="smallhalfpage">
-        <h2>TODO: rest of page form</h2>
+        <label>
+            Enter playlist name:
+            <input type="text" asp-for="playlistname" form="oltp" />
+        </label>
+        <br/>
+        <button type="submit" title="Retreive Playlist" form="oltp"
+                asp-page-handler="Fetch">Fetch</button>
     </div>
 </section>
 
