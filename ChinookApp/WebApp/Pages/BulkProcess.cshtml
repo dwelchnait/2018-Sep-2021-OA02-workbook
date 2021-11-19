@@ -2,6 +2,90 @@
 @model WebApp.Pages.BulkProcessModel
 @{
 }
+
+@section CustomCSS{
+    @* this is coded using embedded css style coding *@
+    <partial name="_TwoColumn" />
+
+}
 <h1>OLTP Bulk Processing</h1>
-<p> Search by @Model.argsearch on the value @Model.argvalue
-      <a href="/BulkProcessQuery"> return to search ...</a></p>
+<p>
+    Search by @Model.argsearch on the value @Model.argvalue
+    <a href="/BulkProcessQuery"> return to search ...</a>
+</p>
+
+<section class="setflex">
+    <div class="bighalfpage">
+        @if (Model.trackInfo != null)
+        {
+            if (Model.trackInfo.Count == 0)
+            {
+                <p style="color:blue; font-weight:bold;">This search finds no tracks on file.</p>
+
+            }
+            else
+            {
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Song</th>
+                            <th>Album</th>
+                            <th>Artist</th>
+                            <th>Length</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.trackInfo)
+                        {
+                            <tr>
+                                <td>
+                                    <form method="post">
+                                        <input type="hidden" value="@item.TrackId"
+                                               asp-for="addtrackid" />
+                                        <button type="submit" title="Add this track">
+                                            <i class="las la-plus"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>@item.Name</td>
+                                <td>@item.AlbumTitle</td>
+                                <td>@item.ArtistName</td>
+                                <td>@item.RunningTime.ToString(@"mm\:ss")</td>
+                                <td>@item.UnitPrice</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                @{
+                                    foreach (var pageRef in Model.Pager)
+                                    {
+                                        if (pageRef == Model.Pager.CurrentPage) // I can use the == because of PageRef type being a C# 9 record type
+                                        {
+                                            <b>@pageRef.Text</b>
+                                        }
+                                        else
+                                        {
+                                            <a title="Page @pageRef.Page" asp-page="/BulkProcess"
+                                               asp-route-currentpage="@pageRef.Page">@pageRef.Text</a>
+                                        }
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            }
+
+        }
+    </div>
+    <div class="smallhalfpage">
+        <h2>TODO: rest of page form</h2>
+    </div>
+</section>
+
+

@@ -14,5 +14,13 @@ namespace ChinookSystem.Models
         public string ArtistName { get; set; }
         public int Milliseconds { get; set; }
         public decimal UnitPrice { get; set; }
+
+        public TimeSpan RunningTime
+        {
+            get
+            {
+                return TimeSpan.FromMilliseconds(Milliseconds);
+            }
+        }
     }
 }
