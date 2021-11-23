@@ -42,5 +42,13 @@ namespace ChinookSystem.BLL
         }
         #endregion
 
+        #region Playlist Track Maintenance
+        public void PlaylistTrack_AddTrack(string playlistname,
+                                           string username,
+                                           int trackid)
+        {
+            throw new Exception("adding track BLL");
+        }
+        #endregion
     }
 }

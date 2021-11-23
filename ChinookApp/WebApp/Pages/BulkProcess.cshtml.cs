@@ -99,6 +99,9 @@ namespace WebApp.Pages
                     throw new Exception("You need to have a playlist select first");
                 }
                 //TODO: add track to playlist
+                _playlisttrackservices.PlaylistTrack_AddTrack(playlistname,
+                                                              "HansenB",
+                                                              addtrackid);
                 FeedBackMessage = "adding the track";
             }
             catch(Exception ex)
