@@ -14,6 +14,7 @@ namespace WebApp.Pages
     {
         #region Private variables and DI constructor
         private readonly TrackServices _trackservices;
+        private readonly PlaylistTrackServices _playlisttrackservices;
 
         [TempData]
         public string FeedBackMessage { get; set; }
@@ -24,10 +25,11 @@ namespace WebApp.Pages
 
         public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
 
-        public BulkProcessModel(TrackServices trackservices)
+        public BulkProcessModel(TrackServices trackservices,
+                                PlaylistTrackServices playlisttrackservices)
         {
             _trackservices = trackservices;
-
+            _playlisttrackservices = playlisttrackservices;
         }
         #endregion
 
@@ -66,6 +68,11 @@ namespace WebApp.Pages
                 trackInfo = _trackservices.Tracks_GetByArtistAlbum(argsearch, argvalue,
                                             pageNumber, PAGE_SIZE, out totalcount);
                 Pager = new Paginator(totalcount, current);
+            }
+
+            if(playlistname != null)
+            {
+                pltrackInfo = _playlisttrackservices.Tracks_GetPlaylistforUser(playlistname, "HansenB");
             }
         }
 
