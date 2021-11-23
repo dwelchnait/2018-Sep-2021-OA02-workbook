@@ -11,13 +11,13 @@ namespace ChinookSystem.Models
         public int TrackId { get; set; }
         public int TrackNumber { get; set; }
         public string Song { get; set; }
-        public int Millseconds { get; set; }
+        public int Milliseconds { get; set; }
 
         public TimeSpan RunningTime
         {
             get
             {
-                return TimeSpan.FromMilliseconds(Millseconds);
+                return TimeSpan.FromMilliseconds(Milliseconds);
             }
         }
     }

@@ -60,6 +60,13 @@ namespace ChinookSystem
                 var context = serviceProvider.GetRequiredService<ChinookContext>();
                 return new TrackServices(context);
             });
+
+            services.AddTransient<PlaylistTrackServices>((serviceProvider) =>
+            {
+                //get the dbcontext class
+                var context = serviceProvider.GetRequiredService<ChinookContext>();
+                return new PlaylistTrackServices(context);
+            });
         }
     }
 }
