@@ -17,6 +17,7 @@ namespace WebApp.Pages
 
         [TempData]
         public string FeedBackMessage { get; set; }
+        public bool HasFeedBack => !string.IsNullOrWhiteSpace(FeedBackMessage);
 
         [TempData]
         public string ErrorMessage { get; set; }
@@ -48,6 +49,9 @@ namespace WebApp.Pages
         [BindProperty]
         public List<TrackInfo> trackInfo { get; set; }
 
+        [BindProperty]
+        public List<PLTrackInfo> pltrackInfo { get; set; }
+
         //paging
         private const int PAGE_SIZE = 5;
         public Paginator Pager { get; set; }
@@ -77,6 +81,38 @@ namespace WebApp.Pages
                 argvalue = argvalue,
                 playlistname = playlistname
             });
+        }
+        
+        public IActionResult OnPostAddTrack()
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(playlistname))
+                {
+                    throw new Exception("You need to have a playlist select first");
+                }
+                //TODO: add track to playlist
+                FeedBackMessage = "adding the track";
+            }
+            catch(Exception ex)
+            {
+                ErrorMessage = GetInnerException(ex).Message;
+            }
+            return RedirectToPage(new
+            {
+                argsearch = argsearch,
+                argvalue = argvalue,
+                playlistname = playlistname
+            });
+        }
+
+        private Exception GetInnerException(Exception ex)
+        {
+            while(ex.InnerException !=null)
+            {
+                ex = ex.InnerException;
+            }
+            return ex;
         }
     }
 }
