@@ -1,0 +1,148 @@
+﻿@page "{argsearch?}/{argvalue?}/{playlistname?}"
+@model WebApp.Pages.BulkProcessModel
+@{
+}
+
+@section CustomCSS{
+    @* this is coded using embedded css style coding *@
+    <partial name="_TwoColumn" />
+
+}
+<h1>OLTP Bulk Processing</h1>
+<p>
+    Search by @Model.argsearch on the value @Model.argvalue
+    <a href="/BulkProcessQuery"> return to search ...</a>
+</p>
+
+@if (Model.HasError)
+{
+    <blockquote>@Model.ErrorMessage</blockquote>
+}
+
+@if (Model.HasFeedBack)
+{
+    <blockquote>@Model.FeedBackMessage</blockquote>
+}
+
+<section class="setflex">
+    <div class="bighalfpage">
+        @if (Model.trackInfo != null)
+        {
+            if (Model.trackInfo.Count == 0)
+            {
+                <p style="color:blue; font-weight:bold;">This search finds no tracks on file.</p>
+
+            }
+            else
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Song</th>
+                            <th>Album</th>
+                            <th>Artist</th>
+                            <th>Length</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.trackInfo)
+                        {
+                            <tr>
+                                <td>
+                                    <form method="post" id="oltp">
+                                        <input type="hidden" value="@item.TrackId"
+                                               asp-for="addtrackid" />
+                                        <button type="submit" title="Add this track"
+                                                asp-page-handler="AddTrack">
+                                            <i class="las la-plus"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>@item.Name</td>
+                                <td>@item.AlbumTitle</td>
+                                <td>@item.ArtistName</td>
+                                <td>@item.RunningTime.ToString(@"mm\:ss")</td>
+                                <td>@item.UnitPrice</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                @{
+                                    foreach (var pageRef in Model.Pager)
+                                    {
+                                        if (pageRef == Model.Pager.CurrentPage) // I can use the == because of PageRef type being a C# 9 record type
+                                        {
+                                            <b>@pageRef.Text</b>
+                                        }
+                                        else
+                                        {
+                                            <a title="Page @pageRef.Page" asp-page="/BulkProcess"
+                                               asp-route-currentpage="@pageRef.Page">@pageRef.Text</a>
+                                        }
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            }
+
+        }
+    </div>
+    <div class="smallhalfpage">
+        <label>
+            Enter playlist name:
+            <input type="text" asp-for="playlistname" form="oltp" />
+        </label>
+        <br />
+        <button type="submit" title="Retreive Playlist" form="oltp"
+                asp-page-handler="Fetch">
+            Fetch
+        </button>
+        <br /><br />
+        @if (Model.pltrackInfo != null)
+        {
+            if (Model.pltrackInfo.Count == 0)
+            {
+                <p style="color:blue; font-weight:bold;">This playlist is empty or does not exist. Adding a track will create the playlist.</p>
+
+            }
+            else
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Trk #</th>
+                            <th>Song</th>
+                            <th>length</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.pltrackInfo)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="hidden" value="@item.TrackId"/>
+                                </td>
+                                <td>@item.TrackNumber</td>
+                                <td>@item.Song</td>
+                                <td>@item.RunningTime.ToString(@"mm\:ss")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+        }
+
+    </div>
+</section>
+
+
