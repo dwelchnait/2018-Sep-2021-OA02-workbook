@@ -95,53 +95,71 @@
         }
     </div>
     <div class="smallhalfpage">
-        <label>
-            Enter playlist name:
-            <input type="text" asp-for="playlistname" form="oltp" />
-        </label>
-        <br />
-        <button type="submit" title="Retreive Playlist" form="oltp"
-                asp-page-handler="Fetch">
-            Fetch
-        </button>
-        <br /><br />
-        @if (Model.pltrackInfo != null)
-        {
-            if (Model.pltrackInfo.Count == 0)
-            {
-                <p style="color:blue; font-weight:bold;">This playlist is empty or does not exist. Adding a track will create the playlist.</p>
+        <form method="post" id="playlist">
 
-            }
-            else
-            {
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Trk #</th>
-                            <th>Song</th>
-                            <th>length</th>
-                        </tr>
-                    </thead>
+            <label>
+                Enter playlist name:
+                <input type="text" asp-for="playlistname" />
 
-                    <tbody>
-                        @foreach (var item in Model.pltrackInfo)
-                        {
+            </label>
+            <br />
+            <button tye="submit" title="Retreive Playlist"
+                    asp-page-handler="Fetch">
+                Fetch
+            </button>
+            <button tye="submit" title="Retreive Playlist"
+                    asp-page-handler="Remove"
+                    style="background-color:var(--danger-color)">
+                Remove Tracks
+            </button>
+            <br /><br />
+            @if (Model.pltrackInfo != null)
+            {
+                if (Model.pltrackInfo.Count == 0)
+                {
+                    <p style="color:blue; font-weight:bold;">This playlist is empty or does not exist. Adding a track will create the playlist.</p>
+
+                }
+                else
+                {
+                    <table>
+                        <thead>
                             <tr>
-                                <td>
-                                    <input type="hidden" value="@item.TrackId"/>
-                                </td>
-                                <td>@item.TrackNumber</td>
-                                <td>@item.Song</td>
-                                <td>@item.RunningTime.ToString(@"mm\:ss")</td>
+                                <th></th>
+                                <th>Trk #</th>
+                                <th>Song</th>
+                                <th>length</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model.pltrackInfo)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="hidden" name="ctrackInfo.Index" value="@item.TrackId" />
+                                        <input type="hidden"
+                                               value="@item.TrackId"
+                                               name="ctrackInfo[@item.TrackId].TrackId" />
+                                        <input type="checkbox"
+                                               name="ctrackInfo[@item.TrackId].SelectedTrack" />
+
+                                    </td>
+                                    <td>@item.TrackNumber</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.RunningTime.ToString(@"mm\:ss")</td>
+                                    <td>
+                                        <input type="text" class="smallbox"
+                                               name="ctrackInfo[@item.TrackId].InputData" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
             }
-
-        }
-
+        </form>
     </div>
 </section>
 

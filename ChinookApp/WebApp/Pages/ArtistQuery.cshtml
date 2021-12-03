@@ -1,9 +1,28 @@
-﻿@page
+﻿@page "{artistid?}"
 @model WebApp.Pages.ArtistQueryModel
 @{
+    ViewData["Title"] = "DataList Query";
 }
 @* if you needed validation on your page you can add *@
-@section scripts{ 
-    <partial name="_ValidationScriptsPartial"? />
+@section scripts{
+    <partial name="_ValidationScriptsPartial" ? />
 }
-<h1> Artist Query</h1>
+<h1> Artist Query (DataList Query)</h1>
+<form method="post">
+    <label>
+        Lookup Artist
+
+        <input type="text" list="existing-artists" placeholder="enter artist name" asp-for="artistid" />
+        <datalist id="existing-artists">
+            @foreach (var artist in Model.allArtists)
+            {
+                <option value="@artist.ValueField">@artist.DisplayField</option>
+            }
+        </datalist>
+    </label>
+    @* the button could be removed from the form by adding the following to the input control
+         onchange="this.form.submit()
+        whic is a little JavaScript"*@
+    <button type="submit">Fetch</button>
+</form>
+<p>@Model.FeedBack</p>

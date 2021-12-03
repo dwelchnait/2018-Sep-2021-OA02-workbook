@@ -54,6 +54,9 @@ namespace WebApp.Pages
         [BindProperty]
         public List<PLTrackInfo> pltrackInfo { get; set; }
 
+        [BindProperty]
+        public List<CTrackInfo> ctrackInfo { get; set; }
+
         //paging
         private const int PAGE_SIZE = 5;
         public Paginator Pager { get; set; }
@@ -110,6 +113,37 @@ namespace WebApp.Pages
             }
             return RedirectToPage(new
             {
+                argsearch = argsearch,
+                argvalue = argvalue,
+                playlistname = playlistname
+            });
+        }
+
+        public IActionResult OnPostRemove()
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(playlistname))
+                {
+                    ErrorMessage = $"you need to have a playlist name";
+                }
+                else
+                {
+                    _playlisttrackservices.DeleteTracks(playlistname, "HansenB", ctrackInfo);
+                    FeedBackMessage = "Tracks removed.";
+                    //FeedBackMessage = $"{ctrackInfo.Count()}";
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = GetInnerException(ex).Message;
+
+            }
+
+            //return Page();
+            return RedirectToPage(new
+            {
+
                 argsearch = argsearch,
                 argvalue = argvalue,
                 playlistname = playlistname

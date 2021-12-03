@@ -97,6 +97,23 @@ namespace ChinookSystem.BLL
             int skipRows = (pageNumber - 1) * pagesize;
             return albums.Skip(skipRows).Take(pagesize).ToList();
         }
+
+        public List<AlbumItem> GetAlbumsByArtist(int artistid)
+        {
+            List<AlbumItem> info = _context.Albums
+                        .Where(x => x.ArtistId == artistid)
+                        .Select(x => new AlbumItem
+                        {
+                            AlbumId = x.AlbumId,
+                            Title = x.Title,
+                            ArtistId = x.ArtistId,
+                            ReleaseYear = x.ReleaseYear,
+                            ReleaseLabel = x.ReleaseLabel
+                        })
+                        .OrderBy(x => x.ReleaseYear).ToList();
+            return info;
+        }
+
         #endregion
 
         #region Add,Update and Delete
@@ -175,23 +192,29 @@ namespace ChinookSystem.BLL
         public int DeleteAlbum(AlbumItem item)
         {
             Album exist = _context.Albums
-                            .Where(x => x.AlbumId == item.AlbumId)
-                            .FirstOrDefault();
+                           .Where(x => x.AlbumId == item.AlbumId)
+                           .FirstOrDefault();
             if (exist == null)
             {
-                throw new Exception("Album already has been removed from the file");
+                throw new Exception("Album does not exist on file");
             }
-            
-            //stage add in local memory
+            //setup the entity instance with the data from the view model parameter
+            //NOTE: For an update you need the pkey value
+            //if the album was found, then you have a copy of that record (instance)
+            //  in your  variable
+            //You the pkey, you need to move your rest of the fields into the
+            //  appropriate columns
+
+            exist.Title = item.Title;
+            exist.ArtistId = item.ArtistId;
+            exist.ReleaseYear = item.ReleaseYear;
+            exist.ReleaseLabel = item.ReleaseLabel;
+
             EntityEntry<Album> deleting = _context.Entry(exist);
             deleting.State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
-            
-           
-            //send stage request to the database for processing
-            //the returned value is the number of rows altered
+
             return _context.SaveChanges();
         }
-
         #endregion
     }
 }
